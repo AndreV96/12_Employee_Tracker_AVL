@@ -1,4 +1,4 @@
-//TODO Generate the inquirer questions and functions to navigate the questions
+//TODO  Connect the role/employee/department questions with the corresponding tables
 //TODO: Check one more timethe whole mysql module.
 //TODO: Create schema.sql file based on the image from the README
 //TODO: Create seeds file
@@ -33,21 +33,16 @@ const addEmployeeQuestions = [
     type: "list",
     name: "employeeRole",
     message: "What is the employee's role?",
-    choices: [],
+    choices: ["a"],
   },
   {
     type: "list",
     name: "employeeManager",
     message: "Who is the employee's manager?",
-    choices: [],
+    choices: ["a"],
   },
 ]
 const addRoleQuestions = [
-  {
-    type: "list",
-    name: "addRole",
-    message: ["What is the name of the role?", "What is the salary of the role?", "Which department does the role belong to?"],
-  },
   {
     type: "input",
     name: "roleName",
@@ -62,7 +57,7 @@ const addRoleQuestions = [
     type: "list",
     name: "roleDepartment",
     message: "Which department does the role belong to?",
-    choices: [],
+    choices: ["a"],
   },
 ]
 const addDepartmentQuestion = [
@@ -75,19 +70,23 @@ const addDepartmentQuestion = [
 const updateRoleQuestion = [
   {
     type: "list",
-    name: "updateRole",
-    message: "Which employee's role do you want to update?",
-    choices: []
+    name: "updateRoleEmployee",
+    message: "Which employee do you want to update?",
+    choices: ["a"],
+  },
+  {
+    type: "list",
+    name: "updateRoleNewRole",
+    message: "What is the new role?",
+    choices: ["a"],
   },
 ]
 
 // Prompt Question Functions
 async function navigationQuest() {
   try {
-    console.log('Welcome to the Employee Manager')
-    const navigationResponse = await inquirer.prompt([navigationQuestion])
-    sendToNextQuestion(navigationResponse);
-    // console.log("Finished questions")
+    const navigationResponse = await inquirer.prompt(navigationQuestion)
+    sendToNextQuestion(navigationResponse.navigation);
   } catch (err) {
     console.log(err);
   }
@@ -98,7 +97,7 @@ function viewAllEmployees() {
 };
 async function addEmployee() {
   try {
-    const employeeResponse = await inquirer.prompt([addEmployeeQuestions])
+    const employeeResponse = await inquirer.prompt(addEmployeeQuestions)
     navigationQuest()
   } catch (err) {
     console.log(err);
@@ -106,24 +105,54 @@ async function addEmployee() {
 };
 async function updateRole() {
   try {
-    const roleResponse = await inquirer.prompt([updateRoleQuestion])
+    const updateRoleResponse = await inquirer.prompt(updateRoleQuestion)
     navigationQuest()
   } catch (err) {
     console.log(err);
   }
 };
-function viewRoles() {
+function viewAllRoles() {
   console.log("All Roles")
   navigationQuest()
 }
+async function addRole() {
+  try {
+    const addRoleRespone = await inquirer.prompt(addRoleQuestions)
+    navigationQuest()
+  } catch (err) {
+    console.log(err)
+  }
+};
+function viewAllDepartments() {
+  console.log('All the departments')
+  navigationQuest()
+}
+async function addDepartment() {
+  try {
+    const addDepartmentRespone = await inquirer.prompt(addDepartmentQuestion)
+    navigationQuest()
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 function sendToNextQuestion(navigationResponse) {
-  if (navigationResponse === "View All Employees")
-  if (navigationResponse === "Add Employee")
-  if (navigationResponse === "Update Employee Role")
-  if (navigationResponse === "View All Roles")
-  if (navigationResponse === "Add Role")
-  if (navigationResponse === "View All Departments")
-  if (navigationResponse === "Add Department")
-  console.log('Finished with the questions.')
+  console.log(navigationResponse)
+  if (navigationResponse === "View All Employees") viewAllEmployees()
+  if (navigationResponse === "Add Employee") addEmployee()
+  if (navigationResponse === "Update Employee Role") updateRole()
+  if (navigationResponse === "View All Roles") viewAllRoles()
+  if (navigationResponse === "Add Role") addRole()
+  if (navigationResponse === "View All Departments") viewAllDepartments()
+  if (navigationResponse === "Add Department") addDepartment()
+  if (navigationResponse === "Quit") console.log('Finished questions')
+
 }
+
+// Initialize server
+function init() {
+  console.log('Welcome to the Employee Manager')
+  navigationQuest()
+}
+
+init()
