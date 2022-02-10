@@ -1,158 +1,58 @@
-//TODO  Connect the role/employee/department questions with the corresponding tables
-//TODO: Check one more timethe whole mysql module.
-//TODO: Create schema.sql file based on the image from the README
-//TODO: Create seeds file
-//TODO: Create all sql commands for each speficic prompt asked. Use classes for this?
-//TODO: Use the console.table package to print MySQL rows to the console.
-//TODO: Make README, walkthrough video and upload the project.
-//TODO: ****MAKE sure you are using MySQL2 package and console.table package
+const express = require('express');
+const mysql = require('mysql2');
 
-const inquirer = require('inquirer');
+const PORT = 3001;
+const app = express();
 
-const navigationQuestion = [
-  {
-    type: "list",
-    name: "navigation",
-    message:
-      "What would you like to do?",
-    choices: ["View All Employees", "Add Employee", "Update Employee Role", "View All Roles", "Add Role", "View All Departments", "Add Department", "Quit"],
-  },
-]
-const addEmployeeQuestions = [
-  {
-    type: "input",
-    name: "employeeFirstName",
-    message: "What is the employee's first name?",
-  },
-  {
-    type: "input",
-    name: "employeeLastName",
-    message: "What is the employee's last name?",
-  },
-  {
-    type: "list",
-    name: "employeeRole",
-    message: "What is the employee's role?",
-    choices: ["a"],
-  },
-  {
-    type: "list",
-    name: "employeeManager",
-    message: "Who is the employee's manager?",
-    choices: ["a"],
-  },
-]
-const addRoleQuestions = [
-  {
-    type: "input",
-    name: "roleName",
-    message: "What is the name of the role?",
-  },
-  {
-    type: "input",
-    name: "roleSalary",
-    message: "What is the salary of the role?",
-  },
-  {
-    type: "list",
-    name: "roleDepartment",
-    message: "Which department does the role belong to?",
-    choices: ["a"],
-  },
-]
-const addDepartmentQuestion = [
-  {
-    type: "input",
-    name: "departmentName",
-    message: "What is the name of the department?",
-  },
-]
-const updateRoleQuestion = [
-  {
-    type: "list",
-    name: "updateRoleEmployee",
-    message: "Which employee do you want to update?",
-    choices: ["a"],
-  },
-  {
-    type: "list",
-    name: "updateRoleNewRole",
-    message: "What is the new role?",
-    choices: ["a"],
-  },
-]
+app.use(express.urlencoded({ extended: false}));
+app.use(express.json());
 
-// Prompt Question Functions
-async function navigationQuest() {
-  try {
-    const navigationResponse = await inquirer.prompt(navigationQuestion)
-    sendToNextQuestion(navigationResponse.navigation);
-  } catch (err) {
-    console.log(err);
-  }
-};
+const db = mysql.createConnection(
+  {
+    host: "localhost",
+    user: "root",
+    password: '',
+    database: 'employees'
+  },
+  console.log(`Connected to the employees database.`)
+)
+
+//The View All queries
+
 function viewAllEmployees() {
-  console.log('All Employees')
-  navigationQuest()
-};
-async function addEmployee() {
-  try {
-    const employeeResponse = await inquirer.prompt(addEmployeeQuestions)
-    navigationQuest()
-  } catch (err) {
-    console.log(err);
-  }
-};
-async function updateRole() {
-  try {
-    const updateRoleResponse = await inquirer.prompt(updateRoleQuestion)
-    navigationQuest()
-  } catch (err) {
-    console.log(err);
-  }
+  db.query('SELECT * FROM employee', (err, result)=> {
+    if (err) {
+      console.log(err)
+    }
+    console.log(result)
+  })  
 };
 function viewAllRoles() {
-  console.log("All Roles")
-  navigationQuest()
-}
-async function addRole() {
-  try {
-    const addRoleRespone = await inquirer.prompt(addRoleQuestions)
-    navigationQuest()
-  } catch (err) {
-    console.log(err)
-  }
+  db.query('SELECT * FROM role', (err, result)=> {
+    if (err) {
+      console.log(err)
+    }
+    console.log(result)
+  })
 };
 function viewAllDepartments() {
-  console.log('All the departments')
-  navigationQuest()
-}
-async function addDepartment() {
-  try {
-    const addDepartmentRespone = await inquirer.prompt(addDepartmentQuestion)
-    navigationQuest()
-  } catch (err) {
-    console.log(err)
-  }
+  db.query('SELECT * FROM department', (err, result)=> {
+    if (err) {
+      console.log(err)
+    }
+    console.log(result)
+  })
 }
 
-function sendToNextQuestion(navigationResponse) {
-  console.log(navigationResponse)
-  if (navigationResponse === "View All Employees") viewAllEmployees()
-  if (navigationResponse === "Add Employee") addEmployee()
-  if (navigationResponse === "Update Employee Role") updateRole()
-  if (navigationResponse === "View All Roles") viewAllRoles()
-  if (navigationResponse === "Add Role") addRole()
-  if (navigationResponse === "View All Departments") viewAllDepartments()
-  if (navigationResponse === "Add Department") addDepartment()
-  if (navigationResponse === "Quit") console.log('Finished questions')
 
-}
 
-// Initialize server
-function init() {
-  console.log('Welcome to the Employee Manager')
-  navigationQuest()
-}
 
-init()
+app.use((req, res) => {
+  res.status(404).end();
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+module.exports = {viewAllEmployees, viewAllRoles, viewAllDepartments}
