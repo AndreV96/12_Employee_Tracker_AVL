@@ -1,5 +1,6 @@
 const express = require('express');
 const mysql = require('mysql2');
+const cTable = require('console.table');
 
 const PORT = 3001;
 const app = express();
@@ -11,7 +12,7 @@ const db = mysql.createConnection(
   {
     host: "localhost",
     user: "root",
-    password: '',
+    password: 'Mthx9996',
     database: 'employees'
   },
   console.log(`Connected to the employees database.`)
@@ -20,11 +21,19 @@ const db = mysql.createConnection(
 //The View All queries
 
 function viewAllEmployees() {
-  db.query('SELECT * FROM employee', (err, result)=> {
+  db.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title as title, department.name as department, role.salary, CONCAT(manager.first_name, " ", manager.last_name) as manager
+  FROM employee
+  
+  JOIN role ON employee.role_id = role.id
+  JOIN department ON role.department_id = department.id
+  LEFT Join employee manager ON employee.manager_id = manager.id;`,
+   (err, result)=> {
     if (err) {
       console.log(err)
     }
-    console.log(result)
+    console.log('\n')
+    console.table(result)
+    console.log('\n\n\n\n\n\n\n')
   })  
 };
 function viewAllRoles() {
