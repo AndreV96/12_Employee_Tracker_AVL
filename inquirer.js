@@ -123,7 +123,6 @@ async function addDepartment() {
 }
 
 function sendToNextQuestion(navigationResponse) {
-  console.log(navigationResponse)
   if (navigationResponse === "View All Employees") viewAllEmployees()
   if (navigationResponse === "Add Employee") addEmployee()
   if (navigationResponse === "Update Employee Role") updateRole()
