@@ -29,8 +29,27 @@ class Queries {
   }
 
   //Add Queries
-  addEmployee() {
-    return this.db.promise().query("")
+  addEmployee(response, employeeData, roleData) {
+    const managerNames = response.employeeManager.split(" ")
+    let role_id
+    let manager_id
+    for (const role of roleData[0]) {
+      if (response.employeeRole === role.title) role_id = role.id
+    }
+    for (const manager of employeeData[0]) {
+      if (managerNames[0] === manager.first_name && managerNames[1] === manager.last_name) manager_id = manager.id
+    }
+    return this.db.promise().query(
+      `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+      VALUES
+        ("${response.employeeFirstName}", "${response.employeeLastName}", ${role_id}, ${manager_id})`
+    );
+  }
+  addRole() {
+
+  }
+  addDepartment(){
+    
   }
 }
 

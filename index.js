@@ -112,9 +112,10 @@ async function viewAllDepartments() {
 async function addEmployee() {
   try {
     
-    const data = await queries.viewAllEmployees()
-    const employeeNamesArr = data[0].map(employee => `${employee.first_name} ${employee.last_name}`)
-    const employeeRolesArr = data[0].map(employee => employee.title)
+    const employeeData = await queries.viewAllEmployees()
+    const roleData = await queries.viewAllRoles()
+    const employeeNamesArr = employeeData[0].map(employee => `${employee.first_name} ${employee.last_name}`)
+    const employeeRolesArr = employeeData[0].map(employee => employee.title)
     const addEmployeeQuestions = [
       {
         type: "input",
@@ -140,9 +141,8 @@ async function addEmployee() {
       },
     ]
     const response = await inquirer.prompt(addEmployeeQuestions)
-    console.log(response)
-    // CONTINUE HERE YOU NEED TO DO THE QUERY TO ADD NEW EMPLOYEE
-    // navigationQuest()
+     await queries.addEmployee(response, employeeData, roleData)
+    navigationQuest()
   } catch (err) {
     console.log(err);
   }
