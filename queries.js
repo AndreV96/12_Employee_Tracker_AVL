@@ -1,3 +1,4 @@
+const res = require("express/lib/response");
 const db = require("./server");
 
 class Queries {
@@ -13,7 +14,8 @@ class Queries {
    
    JOIN role ON employee.role_id = role.id
    JOIN department ON role.department_id = department.id
-   LEFT Join employee manager ON employee.manager_id = manager.id;`
+   LEFT Join employee manager ON employee.manager_id = manager.id
+   ORDER BY employee.id ASC;`
     );
   }
   viewAllRoles() {
@@ -28,7 +30,7 @@ class Queries {
     return this.db.promise().query("SELECT * FROM department");
   }
 
-  //Add Queries
+  // Add Queries
   addEmployee(response, employeeData, roleData) {
     const managerNames = response.employeeManager.split(" ")
     let role_id
@@ -42,15 +44,36 @@ class Queries {
     return this.db.promise().query(
       `INSERT INTO employee (first_name, last_name, role_id, manager_id)
       VALUES
-        ("${response.employeeFirstName}", "${response.employeeLastName}", ${role_id}, ${manager_id})`
+        ("${response.employeeFirstName}", "${response.employeeLastName}", ${role_id}, ${manager_id});`
     );
   }
-  addRole() {
-
-  }
-  addDepartment(){
+  addRole(response, departmentData) {
+    let department_id;
+    console.log(response)
+    console.log(departmentData)
+    for (const department of departmentData[0]){
+      console.log(department.name)
+      if (department.name === response.roleDepartment) department_id = department.id
+    }
+    return this.db.promise().query(
+     
+      `INSERT INTO role (title, salary, department_id)
+      VALUES 
+        ("${response.roleName}", ${response.roleSalary}, ${department_id});`
+    )
+  };
+  addDepartment(response){
+    console.log(response.departmentName)
+    return this.db.promise().query(
+      `INSERT INTO department (name)
+      VALUES
+        ("${response.departmentName}");`
+    )
     
   }
-}
+
+  }
+    
+  
 
 module.exports = new Queries(db);

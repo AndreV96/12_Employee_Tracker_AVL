@@ -6,7 +6,8 @@
 
 const inquirer = require('inquirer');
 const cTable = require("console.table");
-const queries = require("./queries")
+const queries = require("./queries");
+const e = require('express');
 
 const navigationQuestion = [
   {
@@ -18,24 +19,6 @@ const navigationQuestion = [
   },
 ]
 
-const addRoleQuestions = [
-  {
-    type: "input",
-    name: "roleName",
-    message: "What is the name of the role?",
-  },
-  {
-    type: "input",
-    name: "roleSalary",
-    message: "What is the salary of the role?",
-  },
-  {
-    type: "list",
-    name: "roleDepartment",
-    message: "Which department does the role belong to?",
-    choices: ["a"],
-  },
-]
 const addDepartmentQuestion = [
   {
     type: "input",
@@ -111,11 +94,10 @@ async function viewAllDepartments() {
 
 async function addEmployee() {
   try {
-    
     const employeeData = await queries.viewAllEmployees()
     const roleData = await queries.viewAllRoles()
     const employeeNamesArr = employeeData[0].map(employee => `${employee.first_name} ${employee.last_name}`)
-    const employeeRolesArr = employeeData[0].map(employee => employee.title)
+    const employeeRolesArr = roleData[0].map(role => role.title)
     const addEmployeeQuestions = [
       {
         type: "input",
@@ -147,49 +129,52 @@ async function addEmployee() {
     console.log(err);
   }
 };
-
-async function addDepartment() {
-  try {
-
-  } catch (err) {
-    console.log(err)
-  }
-}
-async function updateRole() {
-  try {
-    const updateRoleResponse = await inquirer.prompt(updateRoleQuestion)
-
-  } catch (err) {
-    console.log(err);
-  }
-};
 async function addRole() {
   try {
+    const departmentData = await queries.viewAllDepartments()
+    const departmentArr = departmentData[0].map(department => department.name)
+    const addRoleQuestions = [
+      {
+        type: "input",
+        name: "roleName",
+        message: "What is the name of the role?",
+      },
+      {
+        type: "input",
+        name: "roleSalary",
+        message: "What is the salary of the role?",
+      },
+      {
+        type: "list",
+        name: "roleDepartment",
+        message: "Which department does the role belong to?",
+        choices: [...departmentArr],
+      },
+    ]
     const addRoleResponse = await inquirer.prompt(addRoleQuestions)
-
+    await queries.addRole(addRoleResponse, departmentData)
+    navigationQuest()
   } catch (err) {
     console.log(err)
   }
 };
 async function addDepartment() {
   try {
-    const addDepartmentRespone = await inquirer.prompt(addDepartmentQuestion)
-
+    const addDepartmentResponse = await inquirer.prompt(addDepartmentQuestion)
+    await queries.addDepartment(addDepartmentResponse)
+    navigationQuest()
   } catch (err) {
     console.log(err)
   }
 }
+//  function updateRole() {
+//   try {
+//     const updateRoleResponse = await inquirer.prompt(updateRoleQuestion)
 
-// function sendToNextQuestion(navigationResponse) {
-//   if (navigationResponse === "View All Employees") viewAllEmployees()
-//   if (navigationResponse === "Add Employee") addEmployee()
-//   if (navigationResponse === "Update Employee Role") updateRole()
-//   if (navigationResponse === "View All Roles") viewAllRoles()
-//   if (navigationResponse === "Add Role") addRole()
-//   if (navigationResponse === "View All Departments") viewAllDepartments()
-//   if (navigationResponse === "Add Department") addDepartment()
-//   if (navigationResponse === "Quit") console.log('Finished questions')
-// }
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
 
 // Initialize server
 function init() {
