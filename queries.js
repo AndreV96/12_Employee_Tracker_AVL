@@ -46,7 +46,6 @@ class Queries {
 
   // Update Queries
   updateRole(response){
-    console.log(response)
     return this.db.promise().query(
       `UPDATE employee SET role_id = ? WHERE id = ?`, [response.role_id, response.id]
     )
