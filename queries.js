@@ -23,55 +23,34 @@ class Queries {
       `SELECT role.id, role.title, department.name as department, role.salary
    FROM role
    
-   JOIN department on role.department_id = department.id;`
+   JOIN department on role.department_id = department.id
+   ORDER by role.id ASC;`
     );
   }
   viewAllDepartments() {
-    return this.db.promise().query("SELECT * FROM department");
+    return this.db.promise().query(`SELECT * FROM department
+    ORDER by id ASC;`);
   }
 
   // Add Queries
-  addEmployee(response, employeeData, roleData) {
-    const managerNames = response.employeeManager.split(" ")
-    let role_id
-    let manager_id
-    for (const role of roleData[0]) {
-      if (response.employeeRole === role.title) role_id = role.id
-    }
-    for (const manager of employeeData[0]) {
-      if (managerNames[0] === manager.first_name && managerNames[1] === manager.last_name) manager_id = manager.id
-    }
+  addEmployee(response) {
     return this.db.promise().query(
-      `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-      VALUES
-        ("${response.employeeFirstName}", "${response.employeeLastName}", ${role_id}, ${manager_id});`
-    );
+      `INSERT INTO employee set ?`, response)
   }
-  addRole(response, departmentData) {
-    let department_id;
-    console.log(response)
-    console.log(departmentData)
-    for (const department of departmentData[0]){
-      console.log(department.name)
-      if (department.name === response.roleDepartment) department_id = department.id
-    }
-    return this.db.promise().query(
-     
-      `INSERT INTO role (title, salary, department_id)
-      VALUES 
-        ("${response.roleName}", ${response.roleSalary}, ${department_id});`
-    )
+  addRole(response) {
+    return this.db.promise().query(`INSERT INTO role SET ?`, response)
   };
   addDepartment(response){
-    console.log(response.departmentName)
-    return this.db.promise().query(
-      `INSERT INTO department (name)
-      VALUES
-        ("${response.departmentName}");`
-    )
-    
+    return this.db.promise().query(`INSERT INTO department SET ?`, response)
   }
 
+  // Update Queries
+  updateRole(response){
+    console.log(response)
+    return this.db.promise().query(
+      `UPDATE employee SET role_id = ? WHERE id = ?`, [response.role_id, response.id]
+    )
+  }
   }
     
   
