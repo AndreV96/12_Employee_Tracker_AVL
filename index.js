@@ -124,14 +124,11 @@ async function addEmployee() {
 }
 async function addRole() {
   try {
-    console.log('hi')
     const departmentData = await queries.viewAllDepartments();
-    console.log(departmentData[0])
     const departmentArr = departmentData[0].map(department => ({
       name: department.name,
       value: department.id
     }));
-    console.log(departmentArr)
     const addRoleQuestions = [
       {
         type: "input",
