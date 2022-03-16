@@ -7,7 +7,7 @@ The Employee Tracker is an application that allows you to store employees inform
 
 Functionality Video: https://watch.screencastify.com/v/XcUPRs24ymqaKuxdKpa1
 
-GitHub Repo: https://github.com/AndreV96/12_Employee_Tracker_AVL.git
+GitHub Repo: https://github.com/AndreV96/Employee_Tracker
 
 ## Table of Contents 
 
