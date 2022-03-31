@@ -9,6 +9,8 @@ Functionality Video: https://watch.screencastify.com/v/XcUPRs24ymqaKuxdKpa1
 
 GitHub Repo: https://github.com/AndreV96/Employee_Tracker
 
+![Terminal Screenshot](/img/website_deployed.PNG)
+
 ## Table of Contents 
 
 - [Installation](#installation)
