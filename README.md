@@ -3,7 +3,7 @@
 
 ## Description
 
-The Employee Tracker is an application that allows you to store employees information from your group or organization. It lets you store employee's information, role's information and department's information. All this inofrmation is stored in a mysql database that can be accesed and provided with new information at any time.
+The Employee Tracker is an application that allows you to store employees information from your group or organization. It lets you store employee's information, role's information and department's information. All this information is stored in a MySql database that can be accesed and provided with new information at any time.
 
 Functionality Video: https://watch.screencastify.com/v/XcUPRs24ymqaKuxdKpa1
 
